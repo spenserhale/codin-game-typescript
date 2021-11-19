@@ -57,6 +57,7 @@ for (let i = 0; i < N; i++) {
     )
 }
 
+// Precompile outcomes
 const aWins = new Set('CP CL PR PS RL RC LS LP SC SR'.split(' '))
 
 // Game Loop
@@ -66,11 +67,12 @@ while (players.length > 1) {
     while (players.length) {
         const a = players.pop()
         const b = players.pop()
-        console.error(`${a.toString()} vs ${b.toString()}`)
         const aWon = a.sign == b.sign ? a.number < b.number : aWins.has(a.sign+b.sign)
         const [winner,loser] = aWon ? [a,b] : [b,a]
         winner.addOpponent(loser)
         qualified.push(winner)
+
+        console.error(`${a.toString()} vs ${b.toString()} => ${winner.toString()}`)
     }
     players = qualified
 }
