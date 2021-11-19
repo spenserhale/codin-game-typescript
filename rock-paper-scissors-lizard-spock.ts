@@ -35,7 +35,7 @@ class Player {
         this.opponents = [];
     }
 
-    setOpponent(opponent: Player): void {
+    addOpponent(opponent: Player): void {
         this.opponents.push(opponent.number)
     }
 
@@ -69,7 +69,7 @@ while (players.length > 1) {
         console.error(`${a.toString()} vs ${b.toString()}`)
         const aWon = a.sign == b.sign ? a.number < b.number : aWins.has(a.sign+b.sign)
         const [winner,loser] = aWon ? [a,b] : [b,a]
-        winner.setOpponent(loser)
+        winner.addOpponent(loser)
         qualified.push(winner)
     }
     players = qualified
