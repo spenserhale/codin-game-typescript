@@ -35,81 +35,8 @@ class Player {
         this.opponents = [];
     }
 
-    play(opponent: Player): number {
-        if(this.isScissors()) {
-            if(opponent.isPaper() || opponent.isLizard()) {
-                return 1;
-            }
-            if(opponent.isRock() || opponent.isSpock() ) {
-                return -1;
-            }
-
-            return 0;
-        }
-        if(this.isPaper()) {
-            if(opponent.isRock() || opponent.isSpock()) {
-                return 1;
-            }
-            if(opponent.isScissors() || opponent.isLizard() ) {
-                return -1;
-            }
-
-            return 0;
-        }
-        if(this.isRock()) {
-            if(opponent.isLizard() || opponent.isScissors()) {
-                return 1;
-            }
-            if(opponent.isPaper() || opponent.isSpock() ) {
-                return -1;
-            }
-
-            return 0;
-        }
-        if(this.isLizard()) {
-            if(opponent.isSpock() || opponent.isPaper()) {
-                return 1;
-            }
-            if(opponent.isRock() || opponent.isScissors() ) {
-                return -1;
-            }
-
-            return 0;
-        }
-        if(this.isSpock()) {
-            if(opponent.isScissors() || opponent.isRock()) {
-                return 1;
-            }
-            if(opponent.isLizard() || opponent.isPaper() ) {
-                return -1;
-            }
-
-            return 0;
-        }
-    }
-
     setOpponent(opponent: Player): void {
         this.opponents.push(opponent.number)
-    }
-
-    isRock(): boolean {
-        return this.sign === 'R';
-    }
-
-    isPaper(): boolean {
-        return this.sign === 'P';
-    }
-
-    isScissors(): boolean {
-        return this.sign === 'C';
-    }
-
-    isLizard(): boolean {
-        return this.sign === 'L';
-    }
-
-    isSpock(): boolean {
-        return this.sign === 'S';
     }
 
     toString(): string {
@@ -130,30 +57,22 @@ for (let i = 0; i < N; i++) {
     )
 }
 
+const aWins = new Set('CP CL PR PS RL RC LS LP SC SR'.split(' '))
+
 // Game Loop
 while (players.length > 1) {
-    let roundOfPlayers = players;
-    let loopLength: number = players.length;
-    console.error(`Remaining players: ${loopLength}`)
-    for(let i = 0; i < loopLength; i += 2) {
-        let p1 = roundOfPlayers[i];
-        let p2 = roundOfPlayers[i + 1];
-
-        p1.setOpponent(p2)
-        p2.setOpponent(p1)
-        let result = p1.play(p2);
-
-        console.error(`${p1.toString()} vs ${p2.toString()}`)
-        if(result === 1) {
-            players = players.filter(player => player.number !== p2.number);
-        }
-        if(result === -1) {
-            players = players.filter(player => player.number !== p1.number);
-        }
-        if(result === 0) {
-            players = players.filter(player => player.number !== Math.max(p1.number, p2.number));
-        }
+    const qualified: typeof players = []
+    console.error(`players: ${players.length}`)
+    while (players.length) {
+        const a = players.pop()
+        const b = players.pop()
+        console.error(`${a.toString()} vs ${b.toString()}`)
+        const aWon = a.sign == b.sign ? a.number < b.number : aWins.has(a.sign+b.sign)
+        const [winner,loser] = aWon ? [a,b] : [b,a]
+        winner.setOpponent(loser)
+        qualified.push(winner)
     }
+    players = qualified
 }
 
 console.log(players[0].number);
